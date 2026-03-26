@@ -1,0 +1,2 @@
+@echo off
+npx tsx src/main.ts gen-locale
