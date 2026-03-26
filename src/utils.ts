@@ -53,6 +53,10 @@ export class FluentUtils {
         const arrResult = [] as string[];
 
         for (const ent of ymlEntity) {
+            if (Array.isArray(ent.parent)) {
+                ent.parent = ent.parent[0];
+            }
+
             const id = ent.id;
             const name = ent.name ?? `{ ent-${ent.parent} }`;
             const desc = ent.description ?? `{ ent-${ent.parent}.desc }`;
