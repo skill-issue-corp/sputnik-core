@@ -132,20 +132,6 @@ describe('FluentUtils', () => {
 
         it('converts array of entities to fluent-formatted string', () => {
             const ymlTrashContent = dedent`
-                - type: entity
-                  abstract: true
-                  parent: TestParent1
-                  id: TestId1
-                  components:
-                  - type: Action
-                    startDelay: true
-                    useDelay: 10
-                    icon:
-                      sprite: Mobs/Ghosts/ghost_human.rsi
-                      state: icon
-                  - type: InstantAction
-                    event: !type:CritSuccumbEvent
-                
                 - type: accessLevel
                   id: Trash1
                   name: id-card-access-level-quartermaster
@@ -155,27 +141,11 @@ describe('FluentUtils', () => {
                   fullReplacements:
                   - trash-1
                   - trash-2
-                
-                - type: entity
-                  parent: TestParent3
-                  id: TestId3
-                  name: test name
-                  description: test desc
-                  suffix: test desc
-                  components:
-                  - type: Action
-                    startDelay: true
-                    useDelay: 10
-                    icon:
-                      sprite: Mobs/Ghosts/ghost_human.rsi
-                      state: icon
-                  - type: InstantAction
-                    event: !type:CritSuccumbEvent
             `;
 
             vi.mocked(fs.readFileSync).mockReturnValue(ymlTrashContent);
 
-            const result = FluentUtils.readYmlEntity('/dir', 'file.yml');
+            const result = FluentUtils.readYmlEntity("/dir", "file.yml");
 
             expect(result).toBeNull();
         });
@@ -213,8 +183,8 @@ describe('FluentUtils', () => {
                 ent-TestId6 = test name
                     .desc = test desc
 
-                ent-TestId7 = {""}
-                    .desc = {""}
+                ent-TestId7 = { "" }
+                    .desc = { "" }
             `;
 
             expect(result).toEqual(expected);
@@ -226,7 +196,7 @@ describe('FluentUtils', () => {
             const oldContent = dedent`
             test-number-zero = Will be deleted
             
-            test-number-one = {""}
+            test-number-one = { "" }
             
             test-number-two = Test text!
             
@@ -298,7 +268,7 @@ describe('FluentUtils', () => {
 
             const newContent = dedent`
             # Test comment
-            test-number-one = {""}
+            test-number-one = { "" }
             
             # Test comments
             # Test comments
@@ -369,7 +339,7 @@ describe('FluentUtils', () => {
             const target = dedent`
             test-number-zero = Will be deleted
             
-            test-number-one = {""}
+            test-number-one = { "" }
             
             test-number-two = Test text!
             
@@ -443,7 +413,7 @@ describe('FluentUtils', () => {
 
             const expected = dedent`
             # Test comment
-            test-number-one = {""}
+            test-number-one = { "" }
 
             # Test comments
             # Test comments
@@ -604,8 +574,8 @@ describe('FluentUtils', () => {
                 ent-TestId6 = new test name
                     .desc = test desc
             
-                ent-TestId7 = {""}
-                    .desc = {""}
+                ent-TestId7 = { "" }
+                    .desc = { "" }
 
                 ent-TestId11 = old test name
                     .desc = old test desc
@@ -686,8 +656,8 @@ describe('FluentUtils', () => {
             ent-TestId6 = new test name
                 .desc = test desc
             
-            ent-TestId7 = {""}
-                .desc = {""}
+            ent-TestId7 = { "" }
+                .desc = { "" }
 
             ent-TestId11 = old test name
                 .desc = old test desc

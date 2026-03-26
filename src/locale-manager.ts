@@ -59,7 +59,12 @@ export class LocaleManager {
             return;
         }
 
-        const content = this.createOrCopyLocale(sourceDir, targetDir, filePath, fileType);
+        const content = this.createOrCopyLocale(
+            sourceDir,
+            targetDir,
+            filePath,
+            fileType
+        );
         if (content === null) {
             return;
         }
