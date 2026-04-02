@@ -26,7 +26,8 @@ export class DirManager {
         this._sourceProtoDir = this.getDirPath(this._resDir, FolderPath.SourcePrototypes);
         this._targetProtoDir = this.ensureDir(this._targetLocDir, FolderPath.TargetPrototypes);
 
-        this._dataPath = this.ensureDir(this._startDir, FolderPath.Data);
+        const startProjectDir = path.dirname(this._startDir);
+        this._dataPath = this.ensureDir(startProjectDir, FolderPath.Data);
 
         log.debug('Mount folders End');
     }
