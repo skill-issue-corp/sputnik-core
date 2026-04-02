@@ -2,9 +2,12 @@ import path from 'path';
 import {DirManager, FileManager} from '../file-system-manager.js';
 import {DBManager} from '../database-manager.js';
 import {LocaleManager} from '../locale-manager.js';
+import {fileURLToPath} from 'node:url';
 
 export async function generateLocale(): Promise<void> {
-    const startDir = path.dirname(process.cwd());
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const startDir = path.dirname(__dirname);
 
     const dirManager = new DirManager(startDir);
     const dbManager = new DBManager(dirManager.dataPath);
