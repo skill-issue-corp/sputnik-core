@@ -89,19 +89,20 @@ export class FluentUtils {
             let resultSuffix = `    .suffix = ${suffix}\n`;
 
             if (
-                (ent.parent === undefined && ent.name === undefined)
+                (ent.parent == null && ent.name == null)
                 || ent.name === ''
             ) {
                 resultKey = `ent-${id} = ${empty}\n`;
             }
 
             if (
-                (ent.parent === undefined && (ent.description === undefined))
+                (ent.parent == null && (ent.description == null))
                 || ent.description === ''
             ) {
                 resultDesc = `    .desc = ${empty}\n`;
             }
-            if (suffix === undefined || suffix === '') {
+
+            if (suffix == null || suffix === '') {
                 resultSuffix = '';
             }
 
