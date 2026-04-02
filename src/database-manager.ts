@@ -19,7 +19,7 @@ function validateArgs(
 
     descriptor.value = function (...args: unknown[]) {
         for (const arg of args) {
-            if (arg === null || arg === undefined) {
+            if (arg == null) {
                 throw new Error(`The file type in ${original.name} is not defined!`);
             }
         }

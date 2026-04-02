@@ -34,7 +34,7 @@ export class FluentUtils {
 
         for (const ent of data) {
             if (ent.type !== 'entity') {
-                return null;
+                continue;
             }
 
             result.push({
@@ -46,11 +46,16 @@ export class FluentUtils {
             });
         }
 
+        if (result.length <= 0) {
+            return null;
+        }
+
         return result;
     }
 
     static parseYml(ymlEntity: IEntity[]): string {
         const arrResult = [] as string[];
+        const empty = '{ "" }';
 
         for (const ent of ymlEntity) {
             if (Array.isArray(ent.parent)) {
@@ -60,22 +65,44 @@ export class FluentUtils {
             const id = ent.id;
             const name = ent.name ?? `{ ent-${ent.parent} }`;
             const desc = ent.description ?? `{ ent-${ent.parent}.desc }`;
-            const suffix = ent.suffix ?? null;
-
-            const empty = '{""}';
+            const suffix = ent.suffix;
 
             let resultKey = `ent-${id} = ${name}\n`;
-            if (ent.parent === undefined && ent.name === undefined) {
-                resultKey = `ent-${id} = ${empty}\n`;
-            }
 
-            let resultDesc = `    .desc = ${desc}\n`;
-            if (ent.parent === undefined && ent.description === undefined) {
-                resultDesc = `    .desc = ${empty}\n`;
+            const splitDesc = desc.split('\n');
+            let resultDesc: string;
+
+            if (splitDesc.length > 1) {
+                const space = '        ';
+                const tempResultDesc = [] as string[];
+                tempResultDesc.push(`    .desc = \n`);
+
+                for (const desc of splitDesc) {
+                    tempResultDesc.push(space + desc + '\n');
+                }
+
+                resultDesc = tempResultDesc.join('').trimEnd() + '\n';
+            } else {
+                resultDesc = `    .desc = ${desc}\n`;
             }
 
             let resultSuffix = `    .suffix = ${suffix}\n`;
-            if (suffix === null) {
+
+            if (
+                (ent.parent == null && ent.name == null)
+                || ent.name === ''
+            ) {
+                resultKey = `ent-${id} = ${empty}\n`;
+            }
+
+            if (
+                (ent.parent == null && (ent.description == null))
+                || ent.description === ''
+            ) {
+                resultDesc = `    .desc = ${empty}\n`;
+            }
+
+            if (suffix == null || suffix === '') {
                 resultSuffix = '';
             }
 

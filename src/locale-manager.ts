@@ -36,7 +36,7 @@ export class LocaleManager {
         fsPaths: string[]
     ): void {
         for (const filePath of fsPaths) {
-            if (dbPaths[filePath] === undefined) {
+            if (dbPaths[filePath] == null) {
                 this.mirroringLocaleCreation(dbManager, sourceDir, targetDir, filePath);
             } else if (
                 !FileManager.isFluentException(filePath)
@@ -59,7 +59,12 @@ export class LocaleManager {
             return;
         }
 
-        const content = this.createOrCopyLocale(sourceDir, targetDir, filePath, fileType);
+        const content = this.createOrCopyLocale(
+            sourceDir,
+            targetDir,
+            filePath,
+            fileType
+        );
         if (content === null) {
             return;
         }
