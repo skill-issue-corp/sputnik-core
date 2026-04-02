@@ -5,6 +5,7 @@
 
 .env
 /data
+/Resources
 
 .DS_Store
 
