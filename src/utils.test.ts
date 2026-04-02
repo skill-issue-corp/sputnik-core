@@ -145,7 +145,7 @@ describe('FluentUtils', () => {
 
             vi.mocked(fs.readFileSync).mockReturnValue(ymlTrashContent);
 
-            const result = FluentUtils.readYmlEntity("/dir", "file.yml");
+            const result = FluentUtils.readYmlEntity('/dir', 'file.yml');
 
             expect(result).toBeNull();
         });
