@@ -1,6 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: new URL('../.env', import.meta.url).pathname });
 
+// global
+export const log = {
+    debug: (...args: unknown[]) => isDev && console.log('[DEBUG]', ...args),
+    info: (...args: unknown[]) => console.log('[INFO]', ...args),
+};
+
 function requireEnv(name: string): string {
     const value = process.env[name];
     if (!value) {
@@ -10,14 +16,11 @@ function requireEnv(name: string): string {
 }
 
 const isDev = process.env.BUILD_MODE !== 'Release';
+
+// gen-locale
 const dbPath = requireEnv('DATABASE_PATH');
 const targetPrototypes = requireEnv('PROTOTYPES_FOLDER_NAME');
 const targetLocale = requireEnv('LANGUAGE_FOLDER_NAME');
-
-export const log = {
-    debug: (...args: unknown[]) => isDev && console.log('[DEBUG]', ...args),
-    info: (...args: unknown[]) => console.log('[INFO]', ...args),
-};
 
 export const FolderPath = {
     Resources: 'Resources',
@@ -34,3 +37,9 @@ export type FileType = 'LocaleEntityFile' | 'LocaleKeyFile' | null;
 export type DatabaseColumn = 'id' | 'filePath' | 'hashcode' | 'content';
 export type FileExtension = '.yml' | '.ftl' | null;
 export type FileHashMap = Record<string, number>;
+
+// ai-locale
+export const aiModel = process.env.AI_MODEL;
+export const baseURL = process.env.BASE_URL;
+export const apiKey = process.env.API_KEY;
+export const aiPromt = process.env.AI_PROMT;
