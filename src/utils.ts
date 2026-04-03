@@ -165,10 +165,11 @@ export class FluentUtils {
             }
 
             const sourceFullEntry = this.getFullEntry(newSourceEntry, newSource);
+            const clearSourceFullEntry = this.removeMakePlural(sourceFullEntry);
 
             if (oldEntryContent !== newEntryContent) {
                 const todoComm = this.getTodoComment(targetEntryContent, newEntryContent);
-                const replaceValue = todoComm + sourceFullEntry;
+                const replaceValue = todoComm + clearSourceFullEntry;
                 result = result.replace(sourceFullEntry, replaceValue);
             } else {
                 const targetFullEntry = this.getFullEntry(targetEntry, target);
@@ -177,6 +178,11 @@ export class FluentUtils {
         }
 
         return result;
+    }
+
+    static removeMakePlural(intput: string): string {
+        const regex: RegExp = /\{MAKEPLURAL\(([^)]+)\)\}/g;
+        return intput.replace(regex, '{$1}');
     }
 
     // <editor-fold desc='API for updated content'>
@@ -195,9 +201,7 @@ export class FluentUtils {
     }
 
     private static getFullEntry(entry: Entry, source: string): string {
-        if (entry.type !== 'Message') {
-            return '';
-        }
+        if (entry.type !== 'Message') return '';
 
         const entryStart = entry.comment?.span
             ? entry.comment.span.end + 1

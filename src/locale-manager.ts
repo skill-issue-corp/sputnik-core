@@ -65,8 +65,15 @@ export class LocaleManager {
             filePath,
             fileType
         );
+
         if (content === null) {
             return;
+        }
+
+        const clearContent = FluentUtils.removeMakePlural(content);
+
+        if (clearContent !== content) {
+            FileManager.rewrite(targetDir, filePath, clearContent);
         }
 
         const sourceContent = FileManager.getContent(sourceDir, filePath);
@@ -75,7 +82,7 @@ export class LocaleManager {
         dbManager.insertTable({
             filePath: filePath,
             hashcode: hashCodeContent,
-            content: content
+            content: clearContent
         },
             fileType
         );
