@@ -16,6 +16,8 @@ export async function aiTranslate() {
 
     const openai = new OpenAI({baseURL, apiKey});
 
+
+    // Start - Сделать скрипт, что получает все пути по источникам и каждую итерацию делает перевод
     const message = dedent`
     mime-cant-speak = Your vow of silence prevents you from speaking.
     mime-invisible-wall-popup-self = You brush up against an invisible wall!
@@ -40,6 +42,7 @@ export async function aiTranslate() {
     });
 
     console.log(completion.choices[0].message.content?.toString());
+    // End
 }
 
 function checkEnv(...envs: (string | undefined)[]) {
