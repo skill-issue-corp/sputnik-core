@@ -1,9 +1,18 @@
 import OpenAI from 'openai';
 import {aiModel, aiPromt, apiKey, baseURL, log} from '../common.js';
 import dedent from 'dedent';
+import {fileURLToPath} from 'node:url';
+import path from 'path';
+import {DirManager} from '../file-system-manager.js';
 
 export async function aiTranslate() {
     checkEnv(aiModel, baseURL, apiKey, aiPromt);
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const startDir = path.dirname(__dirname);
+
+    const dirManager = new DirManager(startDir);
 
     const openai = new OpenAI({baseURL, apiKey});
 
