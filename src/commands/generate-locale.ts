@@ -42,6 +42,8 @@ export async function generateLocale(): Promise<void> {
         sourceProtoPaths
     );
 
+    // Dev-TODO: Add MAKEPLURAL cleaner
+
     const targetLocPaths = dbManager.getFilePaths('LocaleKeyFile');
     const targetProtoPaths = dbManager.getFilePaths('LocaleEntityFile');
     LocaleManager.removeGarbage(
