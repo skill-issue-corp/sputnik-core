@@ -180,6 +180,11 @@ export class FluentUtils {
         return result;
     }
 
+    static removeMakePlural(intput: string): string {
+        const regex: RegExp = /\{MAKEPLURAL\(([^)]+)\)\}/g;
+        return intput.replace(regex, '{$1}');
+    }
+
     // <editor-fold desc='API for updated content'>
     private static tryFindEntry(entryArr: Entry[], id: string): Entry | null {
         for (const entry of entryArr) {
@@ -205,11 +210,6 @@ export class FluentUtils {
         const entryEnd = entry.span?.end ?? 0;
 
         return source.slice(entryStart, entryEnd);
-    }
-
-    private static removeMakePlural(intput: string): string {
-        const regex: RegExp = /\{MAKEPLURAL\(([^)]+)\)\}/g;
-        return intput.replace(regex, '{$1}');
     }
 
     private static getTodoComment(oldContent: string | null, newContent: string | null): string {
