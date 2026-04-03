@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import {aiModel, aiPromt, apiKey, baseURL} from '../common.js';
+import {aiModel, aiPromt, apiKey, baseURL, log} from '../common.js';
 import dedent from 'dedent';
 
 export async function aiTranslate() {
@@ -15,6 +15,9 @@ export async function aiTranslate() {
     mime-not-ready-repent = You aren't ready to repent for your broken vow yet.
     mime-ready-to-repent = You feel ready to take your vows again.
     `;
+
+    await waitForEnter();
+    log.info('Processing...');
 
     const completion = await openai.chat.completions.create({
         model: `${aiModel}`,
@@ -36,4 +39,11 @@ function checkEnv(...envs: (string | undefined)[]) {
             throw new Error('AI values in .env is not set!');
         }
     }
+}
+
+function waitForEnter(): Promise<void> {
+    console.log('Press Enter to continue');
+    return new Promise((resolve) => {
+        process.stdin.once('data', () => resolve());
+    });
 }
