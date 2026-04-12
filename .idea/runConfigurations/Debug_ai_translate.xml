@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Debug ai-translate" type="NodeJSConfigurationType" application-parameters="ai-translate" path-to-js-file="main.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src">
+    <envs>
+      <env name="BUILD_MODE" value="Debug" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

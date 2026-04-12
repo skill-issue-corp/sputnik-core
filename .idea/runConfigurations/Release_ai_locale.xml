@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Release ai-locale" type="NodeJSConfigurationType" application-parameters="ai-locale" path-to-js-file="main.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src">
-    <envs>
-      <env name="BUILD_MODE" value="Release" />
-    </envs>
-    <method v="2" />
-  </configuration>
-</component>

@@ -38,7 +38,7 @@ export type DatabaseColumn = 'id' | 'filePath' | 'hashcode' | 'content';
 export type FileExtension = '.yml' | '.ftl' | null;
 export type FileHashMap = Record<string, number>;
 
-// ai-locale
+// ai-translate
 export const aiModel = process.env.AI_MODEL;
 export const baseURL = process.env.BASE_URL;
 export const apiKey = process.env.API_KEY;

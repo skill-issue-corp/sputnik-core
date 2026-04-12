@@ -5,7 +5,7 @@ const command = process.argv[2];
 
 const commands: Record<string, () => Promise<void>> = {
     'gen-locale': generateLocale,
-    'ai-locale': aiTranslate
+    'ai-translate': aiTranslate
 };
 
 async function main(): Promise<void> {
