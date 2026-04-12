@@ -74,22 +74,7 @@ async function translate(
 
             log.info('Processing...\n');
 
-            const completion = await openai.chat.completions.create({
-                model: `${aiModel}`,
-                messages: [{
-                    role: 'system',
-                    content: `${aiPromt}`,
-                }, {
-                    role: 'user',
-                    content: content,
-                }],
-            });
-
-            const translatedContent = completion.choices[0].message.content?.toString();
-
-            if (translatedContent == null) {
-                throw new Error(`Translation failed: model returned null content for file "${path}"`);
-            }
+            const translatedContent = await fetchCompletion(openai, content);
 
             console.log(`Translate:\n${translatedContent}\n`);
 
@@ -105,4 +90,25 @@ async function translate(
     } finally {
         rl.close();
     }
+}
+
+async function fetchCompletion(openai: OpenAI, content: string): Promise<string> {
+    const completion = await openai.chat.completions.create({
+        model: `${aiModel}`,
+        messages: [{
+            role: 'system',
+            content: `${aiPromt}`,
+        }, {
+            role: 'user',
+            content: content,
+        }],
+    });
+
+    const translatedContent = completion.choices[0].message.content?.toString();
+
+    if (translatedContent == null) {
+        throw new Error(`Translation failed: model returned null content for file "${path}"`);
+    }
+
+    return translatedContent;
 }
