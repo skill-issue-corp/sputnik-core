@@ -55,7 +55,7 @@ export async function aiTranslate() {
             const translatedContent = completion.choices[0].message.content?.toString();
 
             if (translatedContent == null) {
-                throw new Error('');
+                throw new Error(`Translation failed: model returned null content for file "${path}"`);
             }
 
             console.log(`Translate:\n${translatedContent}\n`);
