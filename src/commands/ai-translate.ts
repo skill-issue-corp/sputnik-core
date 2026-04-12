@@ -21,10 +21,34 @@ export async function aiTranslate() {
     const dirManager = new DirManager(startDir);
     const locPaths = await FileManager.getFindFilePaths(dirManager.targetLocDir);
 
+
+
+    await translate(dirManager, openai, locPaths);
+}
+
+function checkEnv(...envs: (string | undefined)[]) {
+    for (const env of envs) {
+        if (env == null) {
+            throw new Error('AI values in .env is not set!');
+        }
+    }
+}
+
+async function confirmTranslate(): Promise<boolean> {
+    const answer = await rl.question('Press "t" to translate, any other key to skip: ');
+    return answer === 't';
+}
+
+async function translate(
+    dirManager: DirManager,
+    openai: OpenAI,
+    locPaths: string[]
+) {
     const separator = '-----------------------------------------------';
-    console.log();
 
     try {
+        console.log();
+
         for (const path of locPaths) {
             const content = FileManager.getContent(dirManager.targetLocDir, path);
 
@@ -72,17 +96,4 @@ export async function aiTranslate() {
     } finally {
         rl.close();
     }
-}
-
-function checkEnv(...envs: (string | undefined)[]) {
-    for (const env of envs) {
-        if (env == null) {
-            throw new Error('AI values in .env is not set!');
-        }
-    }
-}
-
-async function confirmTranslate(): Promise<boolean> {
-    const answer = await rl.question('Press "t" to translate, any other key to skip: ');
-    return answer === 't';
 }
