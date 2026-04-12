@@ -137,7 +137,7 @@ export class LocaleManager {
 
         const targetContent = FileManager.getContent(targetDir, ftlFilePath);
 
-        const updatedContent = FluentUtils.getUpdatedContent(
+        const updatedContent = FluentUtils.mergeWithTodo(
             dbContent,
             checkedSourceContent,
             targetContent

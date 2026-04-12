@@ -130,7 +130,45 @@ export class FluentUtils {
         return FluentUtils.parseYml(rawContent);
     }
 
-    static getUpdatedContent(oldSource: string, newSource: string, target: string): string {
+    static overwriteWithTodo(
+        oldContent: string,
+        newContent: string,
+        todoTemplate: string
+    ): string {
+        const parser = new FluentParser();
+
+        let result = newContent;
+
+        const oldEntryArr = parser.parse(oldContent).body;
+        const newEntryArr = parser.parse(newContent).body;
+
+        for (let i = 0; i < newEntryArr.length; i++) {
+            if (
+                oldEntryArr[i].type !== 'Message'
+                || newEntryArr[i].type !== 'Message'
+            ) {
+                continue;
+            }
+
+            const oldEntryContent = this.parseEntryContent(oldEntryArr[i]);
+            const newEntryContent = this.parseEntryContent(newEntryArr[i]);
+
+            const todoComm = this.getTodoComment(
+                oldEntryContent,
+                newEntryContent,
+                todoTemplate
+            );
+
+            const newFullEntry = this.getFullEntry(newEntryArr[i], newContent);
+
+            const replaceValue = todoComm + newFullEntry;
+            result = result.replace(newFullEntry, replaceValue);
+        }
+
+        return result;
+    }
+
+    static mergeWithTodo(oldSource: string, newSource: string, target: string): string {
         const parser = new FluentParser();
 
         const oldEntrySourceArr = parser.parse(oldSource).body;
@@ -212,7 +250,11 @@ export class FluentUtils {
         return source.slice(entryStart, entryEnd);
     }
 
-    private static getTodoComment(oldContent: string | null, newContent: string | null): string {
+    private static getTodoComment(
+        oldContent: string | null,
+        newContent: string | null,
+        todoTemplate: string = 'Update_Locale'
+    ): string {
         if (oldContent === null || newContent === null) return '';
 
         const [oldId, oldKey, ...oldAttrs] = oldContent.split('\n');
@@ -239,7 +281,7 @@ export class FluentUtils {
             return '';
         }
 
-        return `# AUTOGEN-Start\n${lines.join('')}# AUTOGEN-End Update_Loc-TODO:\n`;
+        return `# AUTOGEN-Start\n${lines.join('')}# AUTOGEN-End TODO(${todoTemplate}):\n`;
     }
 
     private static parseEntryContent(entry: Entry): string {

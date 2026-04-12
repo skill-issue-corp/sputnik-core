@@ -1,0 +1,119 @@
+import OpenAI from 'openai';
+import {aiModel, aiPromt, apiKey, baseURL, excludeFiles, includeFiles, log} from '../common.js';
+import {fileURLToPath} from 'node:url';
+import path from 'path';
+import {DirManager, FileManager} from '../file-system-manager.js';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+import {FluentUtils} from '../utils.js';
+
+const rl = readline.createInterface({ input, output });
+
+export async function aiTranslate() {
+    checkEnv(aiModel, baseURL, apiKey, aiPromt);
+
+    const openai = new OpenAI({baseURL, apiKey});
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const startDir = path.dirname(__dirname);
+
+    const dirManager = new DirManager(startDir);
+    let locPaths = await FileManager.getFindFilePaths(dirManager.targetLocDir);
+
+    if (includeFiles?.length) {
+        locPaths = locPaths.filter((path) =>
+            includeFiles?.some((folder) => path.startsWith(folder))
+        );
+    }
+    if (excludeFiles?.length) {
+        locPaths = locPaths.filter((path) =>
+            !excludeFiles?.some((folder) => path.startsWith(folder))
+        );
+    }
+
+    await translate(dirManager, openai, locPaths);
+}
+
+function checkEnv(...envs: (string | undefined)[]) {
+    for (const env of envs) {
+        if (env == null) {
+            throw new Error('AI values in .env is not set!');
+        }
+    }
+}
+
+async function translate(
+    dirManager: DirManager,
+    openai: OpenAI,
+    locPaths: string[]
+) {
+    const separator = '-----------------------------------------------';
+
+    try {
+        console.log();
+
+        for (const path of locPaths) {
+            const content = FileManager.getContent(dirManager.targetLocDir, path);
+
+            console.log(separator);
+            console.log(`Content:\n${content}`);
+            console.log(`\nPath: ${path}`);
+            console.log(separator);
+
+            const isConfirm = await confirmTranslate();
+            if (!isConfirm) {
+                console.log('\n');
+                continue;
+            }
+
+            log.info('Processing...\n');
+
+            const translatedContent = await fetchCompletion(openai, content);
+
+            console.log(`Translate:\n${translatedContent}\n`);
+
+            const translatedContentWithTodo = FluentUtils.overwriteWithTodo(
+                content,
+                translatedContent,
+                'Check_translation'
+            );
+
+            FileManager.rewrite(dirManager.targetLocDir, path, translatedContentWithTodo);
+            console.log('\n');
+        }
+    } finally {
+        rl.close();
+    }
+}
+
+async function confirmTranslate(): Promise<boolean> {
+    try {
+        const answer = await rl.question('Press "t" to translate, any other key to skip: ');
+        return answer === 't';
+    } catch {
+        console.log('\nExiting...');
+        process.exit(0);
+    }
+}
+
+async function fetchCompletion(openai: OpenAI, content: string): Promise<string> {
+    const completion = await openai.chat.completions.create({
+        model: `${aiModel}`,
+        messages: [{
+            role: 'system',
+            content: `${aiPromt}`,
+        }, {
+            role: 'user',
+            content: content,
+        }],
+    });
+
+    const translatedContent = completion.choices[0].message.content?.toString();
+
+    if (translatedContent == null) {
+        throw new Error(`Translation failed: model returned null content for file "${path}"`);
+    }
+
+    return translatedContent;
+}
