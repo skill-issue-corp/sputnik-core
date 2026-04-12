@@ -43,11 +43,6 @@ function checkEnv(...envs: (string | undefined)[]) {
     }
 }
 
-async function confirmTranslate(): Promise<boolean> {
-    const answer = await rl.question('Press "t" to translate, any other key to skip: ');
-    return answer === 't';
-}
-
 async function translate(
     dirManager: DirManager,
     openai: OpenAI,
@@ -89,6 +84,16 @@ async function translate(
         }
     } finally {
         rl.close();
+    }
+}
+
+async function confirmTranslate(): Promise<boolean> {
+    try {
+        const answer = await rl.question('Press "t" to translate, any other key to skip: ');
+        return answer === 't';
+    } catch {
+        console.log('\nExiting...');
+        process.exit(0);
     }
 }
 
