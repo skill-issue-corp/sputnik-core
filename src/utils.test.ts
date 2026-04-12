@@ -429,13 +429,13 @@ describe('FluentUtils', () => {
             
             # AUTOGEN-Start
             # - [color=yellow]$type[/color] тест текст [color=lightblue]$value[/color].
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             test-number-six = - [color=yellow]{$type}[/color] NEW test text [color=lightblue]{$value}[/color].
 
             # AUTOGEN-Start
             # Тест Below is a quick reference guide to several atmospheric devices:
             # Injectors are similar to active vents, but they have no internal pump and do not require power. They cannot be configured, but they can continue to pump gasses up to much higher pressures.
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             test-number-seven =
                 Below is a quick reference guide to several atmospheric devices:
             
@@ -457,7 +457,7 @@ describe('FluentUtils', () => {
             # .content = Тест [head=2]This is an official notice from the [color=red]Chief Security Officer[/color] at a Nanotrasen's Space Station 15.[/head]
             # To whoever receives this letter. I am Sergeant Rigel. My occupation is the CSO. We need immediate assistance.
             # Glory to Nanotrasen.
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             test-number-eight =   Send reinforcements! NEW
                 .desc =         An official notice from... an alternate timeline? NEW
                 .content =
@@ -474,7 +474,7 @@ describe('FluentUtils', () => {
             # AUTOGEN-Start
             # Тест The bolts are { $down ->
             # [true] [color=red]down[/color]
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             test-number-nine = NEW the bolts are {$down ->
             [true] [color=red]NEW down[/color]
             *[false] [color=green]up[/color]
@@ -483,7 +483,7 @@ describe('FluentUtils', () => {
             # AUTOGEN-Start
             # [0] Wh Тест
             # [4] TWh
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             test-number-ten = { TOSTRING($divided, "F1") } { $places ->
                 [0] Wh
                 [1] kWh
@@ -627,7 +627,7 @@ describe('FluentUtils', () => {
             # тестовое имя
             # .desc = тестовое описание
             # .suffix = тестовый суффикс
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             ent-TestId2 = NEW test name
                 .desc = test desc
                 .suffix = test suffix
@@ -638,21 +638,21 @@ describe('FluentUtils', () => {
             
             # AUTOGEN-Start
             # .desc = старое тестовое описание
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             ent-TestId4 = { ent-TestParent4 }
                 .desc = new test desc
                 .suffix = test suffix
             
             # AUTOGEN-Start
             # .suffix = старый тестовый суффикс
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             ent-TestId5 = test name
                 .desc = { ent-TestParent5.desc }
                 .suffix = new test suffix
             
             # AUTOGEN-Start
             # старое тестовое имя
-            # AUTOGEN-End Update_Loc-TODO:
+            # AUTOGEN-End TODO(Update_Locale):
             ent-TestId6 = new test name
                 .desc = test desc
             
