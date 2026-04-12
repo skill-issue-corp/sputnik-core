@@ -1,48 +1,64 @@
 import OpenAI from 'openai';
 import {aiModel, aiPromt, apiKey, baseURL, log} from '../common.js';
-import dedent from 'dedent';
 import {fileURLToPath} from 'node:url';
 import path from 'path';
-import {DirManager} from '../file-system-manager.js';
+import {DirManager, FileManager} from '../file-system-manager.js';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+
+const rl = readline.createInterface({ input, output });
 
 export async function aiTranslate() {
     checkEnv(aiModel, baseURL, apiKey, aiPromt);
+
+    const openai = new OpenAI({baseURL, apiKey});
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const startDir = path.dirname(__dirname);
 
     const dirManager = new DirManager(startDir);
+    const locPaths = await FileManager.getFindFilePaths(dirManager.targetLocDir);
 
-    const openai = new OpenAI({baseURL, apiKey});
+    const separator = '-----------------------------------------------';
+    console.log();
 
+    try {
+        for (const path of locPaths) {
+            const content = FileManager.getContent(dirManager.targetLocDir, path);
 
-    // Start - Сделать скрипт, что получает все пути по источникам и каждую итерацию делает перевод
-    const message = dedent`
-    mime-cant-speak = Your vow of silence prevents you from speaking.
-    mime-invisible-wall-popup-self = You brush up against an invisible wall!
-    mime-invisible-wall-popup-others = {CAPITALIZE(THE($mime))} brushes up against an invisible wall!
-    mime-invisible-wall-failed = You can't create an invisible wall there.
-    mime-not-ready-repent = You aren't ready to repent for your broken vow yet.
-    mime-ready-to-repent = You feel ready to take your vows again.
-    `;
+            console.log(separator);
+            console.log(`Content:\n${content}`);
+            console.log(`\nPath: ${path}`);
+            console.log(separator);
 
-    await waitForEnter();
-    log.info('Processing...');
+            const isConfirm = await confirmTranslate();
+            if (!isConfirm) {
+                console.log();
+                continue;
+            }
 
-    const completion = await openai.chat.completions.create({
-        model: `${aiModel}`,
-        messages: [{
-            role: 'system',
-            content: `${aiPromt}`,
-        }, {
-            role: 'user',
-            content: message,
-        }],
-    });
+            log.info('Processing...\n');
 
-    console.log(completion.choices[0].message.content?.toString());
-    // End
+            const completion = await openai.chat.completions.create({
+                model: `${aiModel}`,
+                messages: [{
+                    role: 'system',
+                    content: `${aiPromt}`,
+                }, {
+                    role: 'user',
+                    content: content,
+                }],
+            });
+
+            const translatedContent = completion.choices[0].message.content?.toString();
+
+            console.log(`Translate:\n${translatedContent}`);
+            console.log();
+        }
+    } finally {
+        rl.close();
+    }
 }
 
 function checkEnv(...envs: (string | undefined)[]) {
@@ -53,9 +69,7 @@ function checkEnv(...envs: (string | undefined)[]) {
     }
 }
 
-function waitForEnter(): Promise<void> {
-    console.log('Press Enter to continue');
-    return new Promise((resolve) => {
-        process.stdin.once('data', () => resolve());
-    });
+async function confirmTranslate(): Promise<boolean> {
+    const answer = await rl.question('Press "t" to translate, any other key to skip: ');
+    return answer === 't';
 }
