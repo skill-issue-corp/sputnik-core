@@ -5,6 +5,7 @@ import path from 'path';
 import {DirManager, FileManager} from '../file-system-manager.js';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+import {FluentUtils} from '../utils.js';
 
 const rl = readline.createInterface({ input, output });
 
@@ -34,7 +35,7 @@ export async function aiTranslate() {
 
             const isConfirm = await confirmTranslate();
             if (!isConfirm) {
-                console.log();
+                console.log('\n');
                 continue;
             }
 
@@ -53,8 +54,20 @@ export async function aiTranslate() {
 
             const translatedContent = completion.choices[0].message.content?.toString();
 
-            console.log(`Translate:\n${translatedContent}`);
-            console.log();
+            if (translatedContent == null) {
+                throw new Error('');
+            }
+
+            console.log(`Translate:\n${translatedContent}\n`);
+
+            const translatedContentWithTodo = FluentUtils.overwriteWithTodo(
+                content,
+                translatedContent,
+                'Check_translation'
+            );
+
+            FileManager.rewrite(dirManager.targetLocDir, path, translatedContentWithTodo);
+            console.log('\n');
         }
     } finally {
         rl.close();
