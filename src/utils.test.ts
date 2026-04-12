@@ -409,7 +409,7 @@ describe('FluentUtils', () => {
             test-number-seventeen = Имя
             `;
 
-            const result = FluentUtils.getUpdatedContent(oldContent, newContent, target);
+            const result = FluentUtils.mergeWithTodo(oldContent, newContent, target);
 
             const expected = dedent`
             # Test comment
@@ -617,7 +617,7 @@ describe('FluentUtils', () => {
                     .suffix = суффикс
             `;
 
-            const result = FluentUtils.getUpdatedContent(oldContent, newContent, target);
+            const result = FluentUtils.mergeWithTodo(oldContent, newContent, target);
 
             const expected = dedent`
             ent-TestId1 = { ent-NewTestParent }

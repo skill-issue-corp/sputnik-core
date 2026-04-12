@@ -166,7 +166,7 @@ export class FluentUtils {
         return result;
     }
 
-    static getUpdatedContent(oldSource: string, newSource: string, target: string): string {
+    static mergeWithTodo(oldSource: string, newSource: string, target: string): string {
         const parser = new FluentParser();
 
         const oldEntrySourceArr = parser.parse(oldSource).body;
