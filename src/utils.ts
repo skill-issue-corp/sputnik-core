@@ -130,6 +130,42 @@ export class FluentUtils {
         return FluentUtils.parseYml(rawContent);
     }
 
+    static getUpdatedContent1(newSource: string, target: string): string {
+        const parser = new FluentParser();
+
+        const newEntrySourceArr = parser.parse(newSource).body;
+        const entryTargetArr = parser.parse(target).body;
+
+        let result = newSource;
+
+        for (const newSourceEntry of newEntrySourceArr) {
+            if (newSourceEntry.type !== 'Message') {
+                continue;
+            }
+
+            const targetEntry = this.tryFindEntry(entryTargetArr, newSourceEntry.id.name);
+
+            if (
+                targetEntry === null
+                || targetEntry.type !== 'Message'
+            ) {
+                continue;
+            }
+
+            const newEntryContent = this.parseEntryContent(newSourceEntry);
+            const targetEntryContent = this.parseEntryContent(targetEntry);
+
+            const sourceFullEntry = this.getFullEntry(newSourceEntry, newSource);
+            const clearSourceFullEntry = this.removeMakePlural(sourceFullEntry);
+
+            const todoComm = this.getTodoComment(targetEntryContent, newEntryContent);
+            const replaceValue = todoComm + clearSourceFullEntry;
+            result = result.replace(sourceFullEntry, replaceValue);
+        }
+
+        return result;
+    }
+
     static getUpdatedContent(oldSource: string, newSource: string, target: string): string {
         const parser = new FluentParser();
 
