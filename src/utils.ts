@@ -130,37 +130,39 @@ export class FluentUtils {
         return FluentUtils.parseYml(rawContent);
     }
 
-    static getUpdatedContent1(newSource: string, target: string): string {
+    static overwriteWithTodo(
+        oldContent: string,
+        newContent: string,
+        todoTemplate: string
+    ): string {
         const parser = new FluentParser();
 
-        const newEntrySourceArr = parser.parse(newSource).body;
-        const entryTargetArr = parser.parse(target).body;
+        let result = newContent;
 
-        let result = newSource;
+        const oldEntryArr = parser.parse(oldContent).body;
+        const newEntryArr = parser.parse(newContent).body;
 
-        for (const newSourceEntry of newEntrySourceArr) {
-            if (newSourceEntry.type !== 'Message') {
-                continue;
-            }
-
-            const targetEntry = this.tryFindEntry(entryTargetArr, newSourceEntry.id.name);
-
+        for (let i = 0; i < newEntryArr.length; i++) {
             if (
-                targetEntry === null
-                || targetEntry.type !== 'Message'
+                oldEntryArr[i].type !== 'Message'
+                || newEntryArr[i].type !== 'Message'
             ) {
                 continue;
             }
 
-            const newEntryContent = this.parseEntryContent(newSourceEntry);
-            const targetEntryContent = this.parseEntryContent(targetEntry);
+            const oldEntryContent = this.parseEntryContent(oldEntryArr[i]);
+            const newEntryContent = this.parseEntryContent(newEntryArr[i]);
 
-            const sourceFullEntry = this.getFullEntry(newSourceEntry, newSource);
-            const clearSourceFullEntry = this.removeMakePlural(sourceFullEntry);
+            const todoComm = this.getTodoComment(
+                oldEntryContent,
+                newEntryContent,
+                todoTemplate
+            );
 
-            const todoComm = this.getTodoComment(targetEntryContent, newEntryContent);
-            const replaceValue = todoComm + clearSourceFullEntry;
-            result = result.replace(sourceFullEntry, replaceValue);
+            const newFullEntry = this.getFullEntry(newEntryArr[i], newContent);
+
+            const replaceValue = todoComm + newFullEntry;
+            result = result.replace(newFullEntry, replaceValue);
         }
 
         return result;
@@ -248,7 +250,11 @@ export class FluentUtils {
         return source.slice(entryStart, entryEnd);
     }
 
-    private static getTodoComment(oldContent: string | null, newContent: string | null): string {
+    private static getTodoComment(
+        oldContent: string | null,
+        newContent: string | null,
+        todoTemplate: string = 'Update_Locale'
+    ): string {
         if (oldContent === null || newContent === null) return '';
 
         const [oldId, oldKey, ...oldAttrs] = oldContent.split('\n');
@@ -275,7 +281,7 @@ export class FluentUtils {
             return '';
         }
 
-        return `# AUTOGEN-Start\n${lines.join('')}# AUTOGEN-End Update_Loc-TODO:\n`;
+        return `# AUTOGEN-Start\n${lines.join('')}# AUTOGEN-End TODO(${todoTemplate}):\n`;
     }
 
     private static parseEntryContent(entry: Entry): string {
