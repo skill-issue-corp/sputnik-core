@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import {aiModel, aiPromt, apiKey, baseURL, log} from '../common.js';
+import {aiModel, aiPromt, apiKey, baseURL, excludeFiles, includeFiles, log} from '../common.js';
 import {fileURLToPath} from 'node:url';
 import path from 'path';
 import {DirManager, FileManager} from '../file-system-manager.js';
@@ -19,9 +19,18 @@ export async function aiTranslate() {
     const startDir = path.dirname(__dirname);
 
     const dirManager = new DirManager(startDir);
-    const locPaths = await FileManager.getFindFilePaths(dirManager.targetLocDir);
+    let locPaths = await FileManager.getFindFilePaths(dirManager.targetLocDir);
 
-
+    if (includeFiles?.length) {
+        locPaths = locPaths.filter((path) =>
+            includeFiles?.some((folder) => path.startsWith(folder))
+        );
+    }
+    if (excludeFiles?.length) {
+        locPaths = locPaths.filter((path) =>
+            !excludeFiles?.some((folder) => path.startsWith(folder))
+        );
+    }
 
     await translate(dirManager, openai, locPaths);
 }

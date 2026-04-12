@@ -43,3 +43,9 @@ export const aiModel = process.env.AI_MODEL;
 export const baseURL = process.env.BASE_URL;
 export const apiKey = process.env.API_KEY;
 export const aiPromt = process.env.AI_PROMT;
+export const includeFiles = (process.env.INCLUDE_FILES)
+    ?.split(';')
+    .filter(Boolean);
+export const excludeFiles = (process.env.EXCLUDE_FILES)
+    ?.split(';')
+    .filter(Boolean);
