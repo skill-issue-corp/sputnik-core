@@ -201,6 +201,8 @@ export class FileManager {
     ): void {
         const fullSourcePath = path.join(sourceDir, filePath);
         const fullTargetPath = path.join(targetDir, filePath);
+
+        fs.mkdirSync(path.dirname(fullTargetPath), { recursive: true });
         fs.cpSync(fullSourcePath, fullTargetPath, { recursive: true });
 
         if (shouldLog) {

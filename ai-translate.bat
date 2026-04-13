@@ -1,5 +1,6 @@
 @echo off
 cd /d "%~dp0"
 echo Checking dependencies...
-npm install
-npx tsx src/main.ts ai-translate
+call npm install
+call npx tsx src/main.ts ai-translate
+pause
