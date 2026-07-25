@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { z } from 'zod';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,6 +39,17 @@ export const FolderPath = {
     Data: dbPath,
     Database: 'database'
 } as const;
+
+const stringOrArray = z.union([z.string(), z.array(z.string())]);
+const coercedOptionalString = z.coerce.string().optional();
+
+export const EntitySchema = z.object({
+    parent: stringOrArray.optional(),
+    id: z.string(),
+    name: coercedOptionalString,
+    description: coercedOptionalString,
+    suffix: coercedOptionalString,
+});
 
 export type FileType = 'LocaleEntityFile' | 'LocaleKeyFile' | null;
 export type DatabaseColumn = 'id' | 'filePath' | 'hashcode' | 'content';

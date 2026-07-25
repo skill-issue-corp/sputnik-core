@@ -2,6 +2,7 @@ import * as yaml from 'js-yaml';
 import * as fs from 'fs';
 import path from 'path';
 import {Entry, Expression, FluentParser, PatternElement} from '@fluent/syntax';
+import {EntitySchema} from './common.js';
 
 export interface IEntity {
     type?: string
@@ -57,7 +58,9 @@ export class FluentUtils {
         const arrResult = [] as string[];
         const empty = '{ "" }';
 
-        for (const ent of ymlEntity) {
+        for (const rawEntity of ymlEntity) {
+            const ent = EntitySchema.parse(rawEntity);
+
             if (Array.isArray(ent.parent)) {
                 ent.parent = ent.parent[0];
             }
